@@ -56,3 +56,8 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    implementation 'com.google.firebase:firebase-core:16.0.9'  // Assurez-vous que la version est correcte
+}
+apply plugin: 'com.google.gms.google-services'

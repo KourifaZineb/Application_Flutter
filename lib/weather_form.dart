@@ -7,14 +7,14 @@ class WeatherForm extends StatefulWidget {
 }
 
 class _WeatherFormState extends State<WeatherForm> {
-  String city = ""; // Initialiser le champ city
+  String city = '';  // Initialize city to an empty string to ensure it is never null.
   TextEditingController cityEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(city.isNotEmpty ? city : 'Weather App'),
+        title: Text(city.isEmpty ? 'Enter a City' : city),  // Display 'Enter a City' if city is empty
         backgroundColor: Colors.deepOrangeAccent,
       ),
       body: Column(
@@ -22,17 +22,18 @@ class _WeatherFormState extends State<WeatherForm> {
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: TextField(
-              decoration: InputDecoration(hintText: 'Tape a City..'),
+              decoration: InputDecoration(hintText: 'Type a City...'),
               controller: cityEditingController,
-              onChanged: (String str) {
+              onChanged: (String value) {
                 setState(() {
-                  city = str;
+                  city = value;  // Update city with the value entered
                 });
               },
-              onSubmitted: (String str) {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Weather(city: city))); // Passer la ville au constructeur de Weather
-                cityEditingController.clear();
+              onSubmitted: (String value) {
+                if (value.isNotEmpty) {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => Weather(value)));
+                  cityEditingController.clear();  // Clear text field after submission
+                }
               },
             ),
           ),
@@ -40,15 +41,16 @@ class _WeatherFormState extends State<WeatherForm> {
             width: double.infinity,
             padding: EdgeInsets.all(10),
             child: ElevatedButton(
-              child: Text('Get Weather'),
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white, backgroundColor: Colors.deepOrangeAccent,
-              ),
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Weather(city: city))); // Passer la ville au constructeur de Weather
-                cityEditingController.clear();
+                if (city.isNotEmpty) {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => Weather(city)));
+                  cityEditingController.clear();  // Clear text field after pressing the button
+                }
               },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white, backgroundColor: Colors.deepOrangeAccent,  // Text color
+              ),
+              child: Text('Get Weather'),
             ),
           ),
         ],

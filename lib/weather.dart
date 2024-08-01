@@ -41,41 +41,36 @@ import 'package:intl/intl.dart';
 
 class Weather extends StatefulWidget {
   final String city;
-
-  Weather({required this.city});
+  Weather(this.city);
 
   @override
   _WeatherState createState() => _WeatherState();
 }
 
 class _WeatherState extends State<Weather> {
-  List<dynamic> weatherData = [];
+  List<dynamic> weatherData = [];  // Initialiser avec une liste vide
 
-  Future<void> getData(String url) async {
-    try {
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {'accept': 'application/json'},
-      );
+  void getData(String url) {
+    http.get(Uri.parse(url), headers: {'Accept': 'application/json'}).then((response) {
       if (response.statusCode == 200) {
         setState(() {
-          weatherData = json.decode(response.body)['list'];  // Assurez-vous que 'list' est correct pour les prévisions
+          weatherData = json.decode(response.body)['list'];
         });
       } else {
-        print('Failed to load weather data');
+        print("Failed to load data");
       }
-    } catch (err) {
-      print('Error: $err');
-    }
+    }).catchError((err) {
+      print(err);
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    // Modifiez pour utiliser /forecast pour correspondre à 'list'
+    // Assurez-vous que l'URL est correct et utilisez 'https'
     String url = 'https://api.openweathermap.org/data/2.5/forecast?q=${widget.city}&appid=d9b2a3cf047cbaba8508a96d7f813fd4';
     print(url);
-    getData(url);
+    this.getData(url);
   }
 
   @override
@@ -86,26 +81,55 @@ class _WeatherState extends State<Weather> {
         backgroundColor: Colors.orange,
       ),
       body: weatherData.isEmpty
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: weatherData.length,
-              itemBuilder: (context, index) {
-                var weather = weatherData[index]['weather'][0];
-                var main = weatherData[index]['main'];
-                return Card(
-                  color: Colors.deepOrangeAccent,
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: AssetImage('images/${weather['main'].toLowerCase()}.png'),
-                    ),
-                    title: Text(DateFormat('E, dd MMM yyyy HH:mm').format(
-                        DateTime.fromMillisecondsSinceEpoch(weatherData[index]['dt'] * 1000))),
-                    subtitle: Text("${weather['description']}"),
-                    trailing: Text("${main['temp'].toStringAsFixed(1)} °C"),
+        ? Center(child: CircularProgressIndicator())
+        : ListView.builder(
+            itemCount: weatherData.length,
+            itemBuilder: (context, index) {
+              var item = weatherData[index];
+              var mainWeather = item['weather'][0]['main'].toLowerCase();
+              var imagePath = 'images/$mainWeather.png';
+              var formattedDate = DateFormat('E dd/MM/yyyy').format(DateTime.fromMillisecondsSinceEpoch(item['dt'] * 1000));
+              var formattedTime = DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(item['dt'] * 1000));
+              return Card(
+                color: Colors.deepOrangeAccent,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Expanded(
+                        child: Row(
+                          children: <Widget>[
+                            CircleAvatar(
+                              backgroundImage: AssetImage(imagePath),
+                            ),
+                            SizedBox(width: 10),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  formattedDate,
+                                  style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  '$formattedTime | $mainWeather',
+                                  style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text(
+                        "${item['main']['temp'].round()} °C",
+                        style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
+          ),
     );
   }
 }
