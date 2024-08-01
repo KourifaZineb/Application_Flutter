@@ -36,7 +36,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:async';
 import 'dart:convert';
 import 'package:intl/intl.dart';
 
@@ -50,7 +49,7 @@ class Weather extends StatefulWidget {
 }
 
 class _WeatherState extends State<Weather> {
-  List<dynamic> weatherData = []; // Initialiser avec une liste vide
+  List<dynamic> weatherData = [];
 
   Future<void> getData(String url) async {
     try {
@@ -60,7 +59,7 @@ class _WeatherState extends State<Weather> {
       );
       if (response.statusCode == 200) {
         setState(() {
-          weatherData = json.decode(response.body)['list'];
+          weatherData = json.decode(response.body)['list'];  // Assurez-vous que 'list' est correct pour les prévisions
         });
       } else {
         print('Failed to load weather data');
@@ -73,7 +72,8 @@ class _WeatherState extends State<Weather> {
   @override
   void initState() {
     super.initState();
-    String url = 'https://api.openweathermap.org/data/2.5/forecast?q=${widget.city}&appid=13304dbe4af419771e4d7f19a24ee64f';
+    // Modifiez pour utiliser /forecast pour correspondre à 'list'
+    String url = 'https://api.openweathermap.org/data/2.5/forecast?q=${widget.city}&appid=d9b2a3cf047cbaba8508a96d7f813fd4';
     print(url);
     getData(url);
   }
@@ -90,58 +90,18 @@ class _WeatherState extends State<Weather> {
           : ListView.builder(
               itemCount: weatherData.length,
               itemBuilder: (context, index) {
+                var weather = weatherData[index]['weather'][0];
+                var main = weatherData[index]['main'];
                 return Card(
                   color: Colors.deepOrangeAccent,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            CircleAvatar(
-                              backgroundImage: AssetImage('images/${weatherData[index]['weather'][0]['main'].toLowerCase()}.png'),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    DateFormat('E dd/MM/yyyy').format(
-                                      DateTime.fromMicrosecondsSinceEpoch(weatherData[index]['dt'] * 1000000),
-                                    ),
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    "${DateFormat('HH:mm').format(
-                                      DateTime.fromMicrosecondsSinceEpoch(weatherData[index]['dt'] * 1000000),
-                                    )} | ${weatherData[index]['weather'][0]['main']}",
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        Text(
-                          "${weatherData[index]['main']['temp'].round()} °C",
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: AssetImage('images/${weather['main'].toLowerCase()}.png'),
                     ),
+                    title: Text(DateFormat('E, dd MMM yyyy HH:mm').format(
+                        DateTime.fromMillisecondsSinceEpoch(weatherData[index]['dt'] * 1000))),
+                    subtitle: Text("${weather['description']}"),
+                    trailing: Text("${main['temp'].toStringAsFixed(1)} °C"),
                   ),
                 );
               },
