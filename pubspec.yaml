@@ -66,6 +66,7 @@ flutter:
     - images/clouds.png
     - images/rain.png
     - images/snow.png
+    - images/profil.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

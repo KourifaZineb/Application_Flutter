@@ -64,6 +64,7 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application/gallery.dart';
 import './quiz.dart';
 import './weather_form.dart';
 
@@ -95,7 +96,7 @@ class MyApp extends StatelessWidget {
               child: Center(
                 child: CircleAvatar(
                   radius: 50,
-                  backgroundImage: NetworkImage('https://.../profile.png'),
+                  backgroundImage: AssetImage('images/profil.jpg'),
                 ),
               ),
               decoration: BoxDecoration(
@@ -131,7 +132,7 @@ class MyApp extends StatelessWidget {
                 Navigator.of(context).pop();
                 // Replace with the appropriate widget for Gallery
                 Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Container()));
+                  context, MaterialPageRoute(builder: (context) => Gallery()));
               }),
             ListTile(
               title: Text(
