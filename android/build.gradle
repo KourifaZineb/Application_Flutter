@@ -2,6 +2,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        jcenter()
     }
 }
 
@@ -19,6 +20,20 @@ tasks.register("clean", Delete) {
 
 dependencies {
     classpath 'com.google.gms:google-services:4.2.0'  // Assurez-vous que la version est correcte
-}    
+}  
+buildscript {
+    repositories {
+        // Assurez-vous que Google's Maven repository est inclus
+        google()
+        jcenter()
+    }
+    dependencies {
+        // Ajoutez cette ligne pour le plug-in des services Google
+        classpath 'com.google.gms:google-services:4.4.2'
+    }
+}
+
+
+
 
 

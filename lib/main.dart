@@ -64,9 +64,12 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application/camera.dart';
 import 'package:flutter_application/gallery.dart';
 import './quiz.dart';
 import './weather_form.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 
 void main() => runApp(const MaterialApp(
   home: MyApp(),
@@ -143,7 +146,7 @@ class MyApp extends StatelessWidget {
                 Navigator.of(context).pop();
                 // Replace with the appropriate widget for Camera
                 Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Container()));
+                  context, MaterialPageRoute(builder: (context) => CameraPage()));
               }),
           ],
         ),
