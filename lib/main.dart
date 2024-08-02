@@ -64,6 +64,7 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application/QRScan.dart';
 import 'package:flutter_application/camera.dart';
 import 'package:flutter_application/gallery.dart';
 import './quiz.dart';
@@ -147,6 +148,17 @@ class MyApp extends StatelessWidget {
                 // Replace with the appropriate widget for Camera
                 Navigator.push(
                   context, MaterialPageRoute(builder: (context) => CameraPage()));
+              }),
+            ListTile(
+              title: Text(
+                'QR Scan', style: TextStyle(fontSize: 18),
+              ),
+              trailing: Icon(Icons.arrow_right),
+              onTap: () {
+                Navigator.of(context).pop();
+                // Replace with the appropriate widget for Camera
+                Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => QRCodePage()));
               }),
           ],
         ),
